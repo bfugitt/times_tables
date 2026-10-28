@@ -397,6 +397,7 @@ static void finishCheck(Check& C) {
 
   String title, msg;
   if (C.full) {
+    S.checkDue = false;
     S.limitMs = C.limit;
     S.flagged.clear();
     for (auto& m : C.missed) {
@@ -622,6 +623,9 @@ static Action openMenu() {
   if (!S.hasCheck) {
     msg = "Let's start with the times tables check.";
     add("Take the check", {A_FULL, -1});
+  } else if (S.checkDue) {
+    msg = "Time for a full check. Let's see how much you've grown!";
+    add("Take the check", {A_FULL, -1});
   } else {
     auto weak = weakTables();
     int rec = -1;
@@ -648,6 +652,7 @@ static bool loadStudent(const String& name) {
   JsonDocument doc;
   if (!apiGet("action=student&name=" + urlEncode(name), doc)) return false;
   S.hasCheck = doc["hasCheck"] | false;
+  S.checkDue = doc["checkDue"] | false;
   for (JsonPair kv : doc["ratings"].as<JsonObject>()) {
     int f = atoi(kv.key().c_str());
     if (f >= 0 && f <= 12) S.rating[f] = String((const char*)(kv.value() | ""));

@@ -25,6 +25,7 @@ struct Student {
   String name;
   // times tables
   bool hasCheck = false;
+  bool checkDue = false;           // full check required before practice
   String rating[13];
   uint32_t limitMs = 5000;
   std::set<int> flagged, learned, working;
